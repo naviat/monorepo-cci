@@ -1,0 +1,37 @@
+description: |
+  Preprocess the << modules-path >> file that is later used by `merge-configs` command.
+   - removes duplicates from << modules-path >> file
+   - converts module names into paths to CircleCI configs.
+   - checks that all files exist
+  Entries in the << modules-path >> file can be in form of module name or full path to the config file.
+  All paths specified __must__ be relative to the repository checkout location.
+  If module name is used, module must have `.circleci/config.yml` present.
+  If full path is specified - the file name must end in `config.yml`
+  If one needs to include a config file from the root `.circleci` directory - full path must be specified.
+
+  Valid `modules.txt` file may look as follows:
+  ```
+  module1
+  module2/
+  module3/.circleci/config.yml
+  module3/.circleci/custom-config.yml
+  .circleci/common-config.yml
+  ```
+
+
+parameters:
+  modules-path:
+    description: <<include(common/description/modules-path.txt)>>
+    type: string
+    default: /tmp/modules.txt
+
+steps:
+  - run:
+      name: Prepare modules for merging
+      shell: /usr/bin/env python3
+      environment:
+        MODULES_PATH: << parameters.modules-path >>
+      command: << include(scripts/prepare_modules.py) >>
+  - run:
+      name: Show modules
+      command: cat << parameters.modules-path >>

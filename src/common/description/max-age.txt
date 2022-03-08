@@ -1,0 +1,4 @@
+How many months back to look for the base commit for the branch.
+If no base commit found in the `$now - max-age` timeframe - HEAD~1 will be used as base.
+Set to 0 to look at the whole history.
+This will not have any effect if << base-revision >> is set to a truthy value.

@@ -1,0 +1,3 @@
+Whether the command should try and get the base revision from the GitHub Pull Request.
+Only effective if << base-revision >> is set to a falsy value.
+`GITHUB_TOKEN` environment variable must be set for this to succeed.

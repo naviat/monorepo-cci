@@ -1,0 +1,3 @@
+module/
+module_foo/
+module_bar/

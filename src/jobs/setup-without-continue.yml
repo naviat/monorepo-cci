@@ -1,0 +1,77 @@
+description: >
+  __This job will not trigger setup workflow continuation.__
+  This job does 3 things:
+   - prepares parameters that will be passed to continuation workflow
+   - merges CircleCI configs from modules, specified in << mappings >> into a single << continuation-config >>
+   - validates combined continuation config with CircleCI cli
+  Not triggering the continuation API allows for greater workflow customization.
+  One can add more steps between the parameters preparation and continuation.
+
+
+parameters:
+  base-revision:
+    default: main
+    description: <<include(common/description/base-revision.txt)>>
+    type: string
+  get-base-from-github:
+    default: false
+    description: <<include(common/description/get-base-from-github.txt)>>
+    type: boolean
+  mappings:
+    default: ""
+    description: <<include(common/description/mappings.txt)>>
+    type: string
+  params-path:
+    default: /tmp/pipeline-parameters.json
+    description: <<include(common/description/params-path.txt)>>
+    type: string
+  default-params:
+    default: "{}"
+    description: <<include(common/description/default-params.txt)>>
+    type: string
+  modules-path:
+    default: /tmp/modules.txt
+    description: <<include(common/description/modules-path.txt)>>
+    type: string
+  default-modules:
+    description: <<include(common/description/default-modules.txt)>>
+    type: string
+    default: ""
+  max-age:
+    default: 4
+    description: <<include(common/description/max-age.txt)>>
+    type: integer
+  continue-config:
+    description: <<include(common/description/continue-config.txt)>>
+    type: string
+    default: .circleci/continue-config.yml
+  executor:
+    description: ""
+    type: executor
+    default: python
+
+
+executor: << parameters.executor >>
+
+
+steps:
+  - checkout
+  - prepare-pipeline-files:
+      base-revision: << parameters.base-revision >>
+      get-base-from-github: << parameters.get-base-from-github >>
+      mappings: << parameters.mappings >>
+      max-age: << parameters.max-age >>
+      params-path: << parameters.params-path >>
+      default-params: << parameters.default-params >>
+      modules-path: << parameters.modules-path >>
+      default-modules: << parameters.default-modules >>
+  - preprocess-modules-file:
+      modules-path: << parameters.modules-path >>
+  - merge-configs:
+      modules-path: << parameters.modules-path >>
+      continue-config: << parameters.continue-config >>
+  - circleci-cli/install:
+      version: v0.1.16508
+  - run:
+      name: Validate continuation config
+      command: circleci --skip-update-check config validate << parameters.continue-config >>

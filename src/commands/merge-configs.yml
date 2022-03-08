@@ -1,0 +1,27 @@
+description: >
+  Creates a continuation config by merging multiple CircleCI config
+  files listed in << modules-path >> file into << continue-config >>.
+
+parameters:
+  modules-path:
+    description: <<include(common/description/modules-path.txt)>>
+    type: string
+    default: /tmp/modules.txt
+  continue-config:
+    description: <<include(common/description/continue-config.txt)>>
+    type: string
+    default: .circleci/continue-config.yml
+
+steps:
+  - run:
+      name: Install dependencies
+      command: pip install yq
+  - run:
+      name: Merge configs from modules
+      environment:
+        MODULES_PATH: << parameters.modules-path >>
+        CONTINUE_CONFIG: << parameters.continue-config >>
+      command: << include(scripts/merge_configs.sh) >>
+  - run:
+      name: Show merged config
+      command: cat << parameters.continue-config >>

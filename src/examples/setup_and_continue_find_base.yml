@@ -1,0 +1,18 @@
+description: >
+  Make the job programmatically figure out the base for diff and look for the base
+  commit in the full git history. Base revision __must__ be set to a falsy value for it to do so.
+
+usage:
+  version: 2.1
+  setup: true
+  orbs:
+    monorepo: naviat/monorepo-cci@x.y.z
+  workflows:
+    setup_workflow:
+      jobs:
+        - monorepo/setup-and-continue:
+            base-revision: ""
+            max-age: 0
+            mappings: |
+              path:^module1; module1; {"build-module-1": true}
+              branch:^main$; module1,module2,module3; {"build-main": true}

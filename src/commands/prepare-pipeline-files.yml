@@ -1,0 +1,64 @@
+description: >
+  This is the main work command.
+  It prepares a JSON file containing parameters that will be used by the continuation workflow
+  and a modules text file that will have paths to monorepo modules and/or CircleCI config files
+  that can be merged into a single "continuation" config.
+  Both files that this command produces (<< params-path >> and << modules-path >>) can be used
+  with the continuation API.
+
+parameters:
+  base-revision:
+    default: main
+    description: <<include(common/description/base-revision.txt)>>
+    type: string
+  get-base-from-github:
+    default: false
+    description: <<include(common/description/get-base-from-github.txt)>>
+    type: boolean
+  mappings:
+    default: ""
+    description: <<include(common/description/mappings.txt)>>
+    type: string
+  params-path:
+    default: /tmp/pipeline-parameters.json
+    description: <<include(common/description/params-path.txt)>>
+    type: string
+  max-age:
+    default: 4
+    description: <<include(common/description/max-age.txt)>>
+    type: integer
+  default-params:
+    default: "{}"
+    description: <<include(common/description/default-params.txt)>>
+    type: string
+  modules-path:
+    description: <<include(common/description/modules-path.txt)>>
+    type: string
+    default: /tmp/modules.txt
+  default-modules:
+    description: <<include(common/description/default-modules.txt)>>
+    type: string
+    default: ""
+steps:
+  - run:
+      name: install requests
+      command: pip install requests
+  - run:
+      name: Prepare parameters and modules files
+      shell: /usr/bin/env python3
+      environment:
+        BASE_REVISION: << parameters.base-revision >>
+        GET_BASE_FROM_GITHUB: << parameters.get-base-from-github >>
+        MAPPINGS: << parameters.mappings >>
+        MAX_AGE: << parameters.max-age >>
+        PARAMS_PATH: << parameters.params-path >>
+        DEFAULT_PARAMS: << parameters.default-params >>
+        MODULES_PATH: << parameters.modules-path >>
+        DEFAULT_MODULES: << parameters.default-modules >>
+      command: <<include(scripts/prepare_files.py)>>
+  - run:
+      name: Show parameters
+      command: cat << parameters.params-path >>
+  - run:
+      name: Show modules
+      command: cat << parameters.modules-path >>

@@ -1,0 +1,22 @@
+description: >
+  Run the setup, execute jobs that need to run before the setup workflow is continued, trigger continuation API
+
+usage:
+  version: 2.1
+  setup: true
+  orbs:
+    monorepo: naviat/monorepo-cci@x.y.z
+    continuation: circleci/continuation@x.y.z
+  workflows:
+    setup_workflow:
+      jobs:
+        - monorepo/setup-without-continue:
+            continue-config: /tmp/continue-config.yml
+            params-path: /tmp/pipeline-parameters.json
+            mappings: |
+              path:^module1; module1; {"build-module-1": true}
+              branch:^main$; module1,module2,module3; {"build-main": true}
+        - your_other_jobs_that_need_to_run_before_workflow_is_continued
+        - continuation/continue:
+            configuration_path: /tmp/continue-config.yml
+            parameters: /tmp/pipeline-parameters.json

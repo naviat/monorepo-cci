@@ -7,6 +7,11 @@ orbs:
   bats: circleci/bats@1.0
   shellcheck: circleci/shellcheck@2.0
 
+executors:
+  python:
+    docker:
+      - image: cimg/python:3.10
+
 # Pipeline Parameters
 ## These parameters are used internally by orb-tools. Skip to the Jobs section.
 parameters:
@@ -29,10 +34,22 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      # "greet" is a sample command packaged with this orb config.
-      # This sample integration test will run as long as the greet command exists. Once you remove the greet command you should remove this line.
-      # Push new changes first, before adding new tests to your config.
-      - monorepo-cci/greet
+  py-unit-tests:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: install poetry
+          command: pip install poetry
+      - run:
+          name: install dependencies
+          command: |
+            poetry config virtualenvs.create false
+            poetry install --no-interaction --no-ansi --no-root
+      - run:
+          name: run unit tests
+          command: python -m pytest --cov="src/scripts" --cov-report term-missing src/tests/
 
 workflows:
   # Prior to producing a development orb (which requires credentials) basic validation, linting, and even unit testing can be performed.
@@ -48,6 +65,11 @@ workflows:
       # optional: Run BATS tests against your scripts
       - bats/run:
           path: ./src/tests
+          exec_environment: python
+          setup-steps:
+            - run: git submodule update --init
+            - run: pip install yq
+      - py-unit-tests
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
           orb-name: naviat/monorepo-cci
@@ -55,7 +77,7 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - bats/run
+            - py-unit-tests
             - shellcheck/check
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
