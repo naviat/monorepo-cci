@@ -1,0 +1,1 @@
+Path to the CircleCI config file that will be used for continuation.

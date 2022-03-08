@@ -1,0 +1,5 @@
+commands:
+  command-two:
+    param: bar
+  command-three:
+    param: foo

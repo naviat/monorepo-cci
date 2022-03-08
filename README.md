@@ -2,13 +2,9 @@
 
 [![CircleCI Build Status](https://circleci.com/gh/naviat/monorepo-cci.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/naviat/monorepo-cci) [![CircleCI Orb Version](https://badges.circleci.com/orbs/naviat/monorepo-cci.svg)](https://circleci.com/orbs/registry/orb/naviat/monorepo-cci) [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/naviat/monorepo-cci/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
-
-
 A starter template for orb projects. Build, test, and publish orbs automatically on CircleCI with [Orb-Tools](https://circleci.com/orbs/registry/orb/circleci/orb-tools).
 
 Additional READMEs are available in each directory.
-
-
 
 ## Resources
 
@@ -19,10 +15,20 @@ Additional READMEs are available in each directory.
 
 We welcome [issues](https://github.com/naviat/monorepo-cci/issues) to and [pull requests](https://github.com/naviat/monorepo-cci/pulls) against this repository!
 
+### Development
+
+Prerequisites:
+
+- python > 3.10
+- poetry
+- circleci cli
+
 ### How to Publish
-* Create and push a branch with your new features.
-* When ready to publish a new production version, create a Pull Request from _feature branch_ to `master`.
-* The title of the pull request must contain a special semver tag: `[semver:<segment>]` where `<segment>` is replaced by one of the following values.
+
+- Create and push a branch with your new features.
+
+- When ready to publish a new production version, create a Pull Request from _feature branch_ to `master`.
+- The title of the pull request must contain a special semver tag: `[semver:<segment>]` where `<segment>` is replaced by one of the following values.
 
 | Increment | Description|
 | ----------| -----------|
@@ -33,9 +39,7 @@ We welcome [issues](https://github.com/naviat/monorepo-cci/issues) to and [pull 
 
 Example: `[semver:major]`
 
-* Squash and merge. Ensure the semver tag is preserved and entered as a part of the commit message.
-* On merge, after manual approval, the orb will automatically be published to the Orb Registry.
-
+- Squash and merge. Ensure the semver tag is preserved and entered as a part of the commit message.
+- On merge, after manual approval, the orb will automatically be published to the Orb Registry.
 
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
-

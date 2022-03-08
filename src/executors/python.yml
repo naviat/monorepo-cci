@@ -1,0 +1,14 @@
+description: Executor that uses python 3.10 by default
+resource_class: <<parameters.resource_class>>
+docker:
+  - image: '<<parameters.image>>:<<parameters.tag>>'
+parameters:
+  tag:
+    default: "3.10"
+    type: string
+  image:
+    default: "cimg/python"
+    type: string
+  resource_class:
+    default: small
+    type: string

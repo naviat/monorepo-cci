@@ -1,0 +1,16 @@
+description: >
+  Run the setup that will prepare files needed for the continuation
+  and continue the setup workflow. This example uses all default options.
+
+usage:
+  version: 2.1
+  setup: true
+  orbs:
+    monorepo: naviat/monorepo-cci@x.y.z
+  workflows:
+    setup_workflow:
+      jobs:
+        - monorepo/setup-and-continue:
+            mappings: |
+              path:^module1; module1; {"build-module-1": true}
+              branch:^main$; module1,module2,module3; {"build-main": true}

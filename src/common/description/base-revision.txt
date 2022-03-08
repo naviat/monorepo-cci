@@ -1,0 +1,4 @@
+The revision to compare the current one against for the purpose of determining changed files.
+If not set - `set-parameters` job will try to figure out the base commit from git history.
+The first commit that is present in more than one branch will be chosen.
+Works best with trunk-based development.

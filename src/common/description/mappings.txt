@@ -1,0 +1,21 @@
+Mapping of regular expressions to modules and pipeline parameters.
+One mapping per line, semicolon-delimited.
+Structure of the mapping is as follows: `where_to_match:pattern; module_name; parameters`
+- `where_to_match` tells where the pattern will be applied. Can be `path`, `tag`, `branch`, `subject`
+- `pattern` a python regex that will be applied to `where_to_match`. The pattern is case-sensitive and is matches from the beginning of the string (re.match is used). Exception is with `where_to_match` == `subject`, then it scans through the whole string (re.search is used)
+- `module_name` is the name of the module which CircleCI config will be joined into continuation config. `module_name` must have `.circleci/config.yml` inside. If left blank - nothing will be added to the modules file for this mapping. Multiple comma-separated module names are allowed in this part of the mapping;
+- `parameters` a JSON blob with parameters to pass into continuation API. Parameters from mappings that sit lower will override previous parameters
+Lines that start with `#` are ignored.
+Some examples:
+(1) `path:module; module1; {"foo": "bar"}` this will add `{"foo": "bar"}` to the << params-path >> file
+    and `module1/.circleci/config.yml` to the << modules-path >> file, if any of the changed files between
+    `head` and `base` match the pattern.
+(2) `branch: ^feature$; module1; {"foo": "bar"}` will add `{"foo": "bar"}` to the << params-path >> file
+    and `module1/.circleci/config.yml` to the << modules-path >> file, if the working branch is called
+    `feature`. CircleCI exposes the current working branch via `CIRCLE_BRANCH` environment variable.
+(3) `tag: tag; module1; {"foo": "bar"}` will add `{"foo": "bar"}` to the << params-path >> file
+    and `module1/.circleci/config.yml` to the << modules-path >> file, if the tag that is being built has
+    `tag` anywhere in its name. CircleCI exposes the tag via `CIRCLE_TAG` environment variable.
+(4) `subject: ^awesome\scommit; module1; {"foo": "bar"}` will add `{"foo": "bar"}` to << params-path >>
+    file and `module1/.circleci/config.yml` to the << modules-path >> file, if the latest commit subject
+    begins with `awesome commit`.

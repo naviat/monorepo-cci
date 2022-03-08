@@ -1,0 +1,15 @@
+Path to the file where modules and/or paths to other CircleCI configs that will be joined are declared.
+Defaults to /tmp/modules.txt even if not set.
+
+Entries in this file can be in form of module name or full path to the config file.
+If module name is used, module must have `.circleci/config.yml` present.
+If full path is specified - the file name must end in `config.yml`
+If one needs to include a config file from the root `.circleci` directory - full path must be specified.
+Valid `modules.txt` file may look as follows:
+```
+module1
+module2/
+module3/.circleci/config.yml
+module3/.circleci/custom-config.yml
+.circleci/common-config.yml
+```
